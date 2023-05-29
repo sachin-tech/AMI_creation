@@ -11,21 +11,12 @@ pipeline {
              // http://34.236.153.152:8080/env-vars.html/
      steps {
       withCredentials([usernamePassword(credentialsId: 'Jenkins_packer', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')] {
-      sh '''
-        ls -lrth
-        cd packer
-     wget https://releases.hashicorp.com/packer/1.4.3/packer_1.4.3_linux_amd64.zip
-     rm -f packer
-     unzip packer_1.4.3_linux_amd64.zip
-     which echo
-     chmod 755 packer
      for i in `ls -lrth *delete.json| awk {'print $9'}`; do ./packer validate $i; done
-            '''
             }
          }
      }
   } 
-}
+ }
 #     stage('AMI creation')  {
 #      steps {
 #       parallel(
