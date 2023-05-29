@@ -11,8 +11,10 @@ pipeline {
              // http://34.236.153.152:8080/env-vars.html/
      steps {
       withCredentials([usernamePassword(credentialsId: 'Jenkins_packer', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')] {
-     for i in `ls -lrth *delete.json| awk {'print $9'}`; do ./packer validate $i; done
-            }
+     sh '''
+	 for i in `ls -lrth *delete.json| awk {'print $9'}`; do ./packer validate $i; done
+            '''
+           }
          }
      }
   } 
