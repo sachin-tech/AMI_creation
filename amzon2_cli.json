@@ -1,0 +1,69 @@
+{
+	"provisioners": [
+		{
+			"type": "file",
+			"source": "ohai_plugins",
+			"destination": "ohai_plugins"
+		},
+		{
+			"type": "shell"
+			"inline": [
+				"sudo mkdir -p /etc/chef/ohai/plugins","
+				"sudo cp ohai_plugins/* /etc/chef/ohai/plugins/",
+				"echo -e \"#!/bin/sh\n\ncat << EOF\n\" | sudo tee -a /etc/update-motd.d/99-morningstar",
+				"echo -e \"\n{{user `aws_ami_name`}} ({{isotime \"2006-01-02\"}})\" | sudo tee -a /etc/update-motd.d/99-morningstar",
+				"echo -e \"{{user `aws_ami_description`}}\" | sudo tee -a /etc/update-motd.d/99-morningstar",
+				sudo chmod 755 /etc/update-motd.d/99-morningstar",
+				"sudo sed -i -e 's/^exec/#exec/' /etc/init/amazon-cloudwatch-agent.conf"
+
+			]
+		},
+                "variables": {
+			"mstart_name": "ami_amzn2_client",
+			"aws_ami_name":  "Guru Amazon Linux 2 - Minimal",
+			"aws_ami_description": "Amazon Linux 2 with minimal software",
+			"ami_regions": "ap-southeast-1,ap-southeast-2,us-east-1,us-west-2",
+			"aws_instance_type":  "t2.medium"
+		},
+		"builders": [
+			"name": "{{user `mstar_name`}}",
+			"ami_name": "{{user `aws_ami_name`}} {{isotime \"2006-01-02\"}}",
+			"ami_regions": "{{user `ami_regions`}}"
+			"ami_description": "{{user `aws_ami_description`}}",
+			"iam_instance_profile": "mstar-ec2-contrail",
+			"vpc_id": "vpc-07c7b67066745066a",
+			"subnet_id": "subnet-0fc961f974c02df9f",
+			"type": "amazon-ebs",
+			"instance_type": "{{user `aws_instance_type`}}",
+			"ssh_username": "ec2-user",
+			"force_deregister": "true",
+			"force_delete_snapshot": "true",
+			"ssh_pty": "true",
+			"tags": {
+                             "Name": "{{user `aws_ami_name`}}-{{isotime \"2006-01-02\"}}",
+                             "Release": "{{isotime \"2006-01-02\"}}",
+                             "Managed": "Packer"
+              },
+	      "source_ami_filter": {
+		  "filters": {
+			  "architecture": "x86_64",
+			  "virtualization_type": "hvm",
+			  "name": "*amzn2-ami-hvm-*",
+			  "root-device-type": "ebs"
+		  },
+		  "owners": ["420138796927"],
+		  "most_recent": true
+	      }
+		],
+		"post-processors": [
+			{
+				"type": "manifest",
+				"output": "artifacts/{{user `mstar_name`}}.{{isotime \"2006-01-02\"}}.{{timestamp}}.json",
+				"strip_path": true,
+				"custom_data": {
+                                    "aws_ami_name": "{{user `aws_ami_name`}}"
+				}
+			}
+			]
+}
+
