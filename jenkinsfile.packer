@@ -19,11 +19,13 @@ pipeline {
      unzip packer_1.4.3_linux_amd64.zip
      which echo
      chmod 755 packer
-     for i in `ls -lrth *client.json| awk {'print $9'}`; do ./packer validate $i; done
+     for i in `ls -lrth *delete.json| awk {'print $9'}`; do ./packer validate $i; done
             '''
             }
          }
      }
+  } 
+}
 #     stage('AMI creation')  {
 #      steps {
 #       parallel(
@@ -33,3 +35,4 @@ pipeline {
 #      cat amzon2_cli.json |jq '.builders[0].tags={"packer_delete_tag": "packer_remove"}' > ami_amzn1_client_delete.json
 #      export AWS_POLL_DELAY_SECONDS=10; export AWS_MAX_ATTEMPTS=500
 #         ./packer build -var "ami_regions=us-east-1" -var "aws_ami_name=Amazon Linux 2 - Packer test" ami_amzn1_client_delete.json || ./packer build -var "ami_regions=us-east-1" -var "aws_ami_name=Amazon Linux 2 - Packer test" ami_amzn1_client_delete.json
+}
