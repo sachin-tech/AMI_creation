@@ -23,9 +23,10 @@
 		     "ami_description": "{{user `aws_ami_description`}}",
 		     "communicator": "winrm",
 		     "iam_instance_profile": "packer_role",
-		     "winrm_user": "Administrator",
+		     "winrm_username": "Administrator",
 		     "vpc_id": "vpc-08dd89c1c516e7503",
 		     "subnet_id": "subnet-096a16cd517641e51",
+		     "type": "amazon-ebs",
 		     "instance_type": "{{user `aws_instance_type`}}",
 		     "source_ami_filter": {
 			     "filters": {
