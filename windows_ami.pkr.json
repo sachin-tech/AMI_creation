@@ -34,7 +34,7 @@
 				     "name": "Windows_Server-2016-English-Full-Base-*",
 				     "root-device-type": "ebs"
 			     },
-			     "owners": "[801119661308]",
+			     "owners": ["801119661308"],
 			     "most_recent": true
 		     },
 		     "tags": {
